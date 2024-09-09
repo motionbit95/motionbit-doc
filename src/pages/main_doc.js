@@ -22,7 +22,7 @@ function MainDocument(props) {
   const menu = window.location.pathname.split("/").pop();
   return (
     <Stack gap={4}>
-      <HStack>
+      <HStack alignItems={"start"}>
         <Sidebar
           onChangeMenu={(value) => {
             window.location.href = `/${value}`;
@@ -45,6 +45,7 @@ function MainDocument(props) {
 
             {/* page */}
             {menu === "request" && <DocumentRequest />}
+            {menu === "RFP" && <DocumentRFP />}
           </Stack>
         </Flex>
       </HStack>

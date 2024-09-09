@@ -35,11 +35,12 @@ function DocumentRequest(props) {
     const getRequestList = async () => {
       // 사용자 ID를 설정합니다.
       const userId = "carejoa"; // 상위 컬렉션의 문서 ID
+      const subCollection = "request";
 
       // Firebase Function URL
-      const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/getRequests?userId=${encodeURIComponent(
+      const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/getDocuments?userId=${encodeURIComponent(
         userId
-      )}`;
+      )}&subCollection=${subCollection}`;
 
       console.log("Fetching user orders from:", functionUrl);
 
@@ -87,7 +88,7 @@ function DocumentRequest(props) {
             <Text>검색결과 {data.length}개</Text>
             <ButtonGroup>
               <Button colorScheme="purple">등록</Button>
-              <Button>삭제</Button>
+              {/* <Button>삭제</Button> */}
             </ButtonGroup>
           </HStack>
           <Box overflowX="auto">

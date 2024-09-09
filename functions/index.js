@@ -48,15 +48,16 @@ exports.getUserData = onRequest(async (request, response) => {
   }
 });
 
-exports.getRequests = onRequest(async (req, res) => {
+exports.getDocuments = onRequest(async (req, res) => {
   const userId = req.query.userId; // 예시: 'carejoa'
+  const subCollection = req.query.subCollection; // 예시: 'request'
 
   try {
     // 특정 사용자의 orders 하위 컬렉션을 참조합니다.
     const ordersRef = db
       .collection("document")
       .doc(userId)
-      .collection("request");
+      .collection(subCollection);
 
     // 하위 컬렉션 내 모든 문서를 가져옵니다.
     const ordersSnapshot = await ordersRef.get();
@@ -77,5 +78,30 @@ exports.getRequests = onRequest(async (req, res) => {
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).send("Error fetching orders");
+  }
+});
+
+exports.saveDocument = onRequest(async (req, res) => {
+  const userId = req.query.userId; // 예시: 'carejoa'
+  const subCollection = req.query.subCollection; // 예시: 'request'
+  const documentData = req.body; // 요청 본문에서 저장할 데이터 받기
+
+  try {
+    // 특정 사용자의 하위 컬렉션 참조
+    const subCollectionRef = db
+      .collection("document")
+      .doc(userId)
+      .collection(subCollection);
+
+    // 새 문서를 추가합니다.
+    const docRef = await subCollectionRef.add(documentData);
+
+    // 성공적으로 문서가 저장되었음을 응답
+    res
+      .status(200)
+      .send({ id: docRef.id, message: "Document successfully saved." });
+  } catch (error) {
+    console.error("Error saving document:", error);
+    res.status(500).send("Error saving document");
   }
 });

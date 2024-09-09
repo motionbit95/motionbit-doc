@@ -1,14 +1,7 @@
 import {
-  Avatar,
   Badge,
   Checkbox,
-  Flex,
   HStack,
-  Icon,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
   useBreakpointValue,
   Stack,
   Text,
@@ -18,37 +11,87 @@ import {
   Th,
   Thead,
   Tr,
-  Container,
   Box,
   ButtonGroup,
-  Button,
+  Progress,
 } from "@chakra-ui/react";
-import { FiSearch, FiEdit2, FiTrash2 } from "react-icons/fi";
-import { IoArrowDown } from "react-icons/io5";
-import React from "react";
+import React, { useEffect } from "react";
+import { AddModal, EditModal } from "../../modals/add_rfs";
 
 function DocumentRFP(props) {
-  const data = [
-    {
-      id: 1,
-      date: "2024.09.09 16:00:08",
-      title: "0902요양모션빛0610피드백",
-      filepath: "",
-    },
-  ];
+  const [data, setData] = React.useState([]);
   const isMobile = useBreakpointValue({ base: true, md: false });
+  useEffect(() => {
+    const getRfpList = async () => {
+      // 사용자 ID를 설정합니다.
+      const userId = "carejoa"; // 상위 컬렉션의 문서 ID
+      const subCollection = "rfp";
+
+      // Firebase Function URL
+      const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/getDocuments?userId=${encodeURIComponent(
+        userId
+      )}&subCollection=${subCollection}`;
+
+      console.log("Fetching user orders from:", functionUrl);
+
+      // fetch 요청을 보냅니다.
+      fetch(functionUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          return response.json(); // JSON 형태로 응답 데이터를 파싱
+        })
+        .then((data) => {
+          // 성공적으로 데이터를 받았을 때 처리
+          console.log("User orders:", data);
+          setData(data);
+        })
+        .catch((error) => {
+          // 에러가 발생했을 때 처리
+          console.error("There was a problem with the fetch operation:", error);
+        });
+    };
+    getRfpList();
+  }, []);
+
+  const addDocument = (data) => {
+    // 사용자 ID, 하위 컬렉션 이름 및 저장할 데이터를 설정합니다.
+    const userId = "carejoa";
+    const subCollection = "rfp";
+    const documentData = data;
+
+    // Firebase Function URL
+    const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/saveDocument?userId=${encodeURIComponent(
+      userId
+    )}&subCollection=${encodeURIComponent(subCollection)}`;
+
+    // fetch 요청을 통해 문서를 저장합니다.
+    fetch(functionUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(documentData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Document saved successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error saving document:", error);
+      });
+  };
+
   return (
     <Stack spacing={4}>
-      <Flex bgColor={"purple.100"} p={3} borderRadius={"lg"}>
-        <HStack alignItems={"flex-start"}>
-          <Text>💡</Text>
-          <Text>
-            클라이언트가 프로젝트 구축 요청 시 전달하는 문서로{" "}
-            <strong>프로젝트에 제안 받을 내용</strong>이나{" "}
-            <strong>프로젝트 요구사항</strong>이 포함되어 있습니다.
-          </Text>
-        </HStack>
-      </Flex>
       <Box
         bg="bg.surface"
         boxShadow={{ base: "none", md: "sm" }}
@@ -58,8 +101,8 @@ function DocumentRFP(props) {
           <HStack justifyContent="space-between">
             <Text>검색결과 {data.length}개</Text>
             <ButtonGroup>
-              <Button colorScheme="purple">등록</Button>
-              <Button>삭제</Button>
+              <AddModal onSubmit={addDocument} />
+              {/* <Button>삭제</Button> */}
             </ButtonGroup>
           </HStack>
           <Box overflowX="auto">
@@ -72,6 +115,7 @@ function DocumentRFP(props) {
 }
 
 export const RFPTable = (props) => {
+  const [selectedItem, setSelectedItem] = React.useState(null);
   return (
     <Table {...props}>
       <Thead>
@@ -79,37 +123,45 @@ export const RFPTable = (props) => {
           <Th width="1">
             <Checkbox />
           </Th>
-          <Th>등록일시</Th>
-          <Th>제목</Th>
+          <Th>스프린트</Th>
+          <Th>구분</Th>
+          {/* <Th>제목</Th> */}
+          <Th>설명</Th>
+          <Th w={"25%"}>진행도</Th>
           <Th>수정</Th>
-          <Th>삭제</Th>
         </Tr>
       </Thead>
       <Tbody>
         {props.data.map((value, index) => (
-          <Tr key={value.id}>
+          <Tr
+            key={value.id}
+            _hover={{ bg: "gray.50", cursor: "pointer" }}
+            onClick={() => setSelectedItem(value)}
+          >
             <Td>
               <Checkbox />
             </Td>
             <Td>
-              <Text color="fg.muted">{value.date}</Text>
+              <Badge size="sm" colorScheme={"red"}>
+                {value.sprint}
+              </Badge>
             </Td>
             <Td>
+              <Badge size="sm" colorScheme={"green"}>
+                {value.division}
+              </Badge>
+            </Td>
+            {/* <Td>
               <Text color="fg.muted">{value.title}</Text>
+            </Td> */}
+            <Td>
+              <Text color="fg.muted">{value.description}</Text>
             </Td>
             <Td>
-              <IconButton
-                icon={<FiTrash2 />}
-                variant="tertiary"
-                aria-label="Delete"
-              />
+              <Progress value={value.progress} colorScheme={"purple"} />
             </Td>
             <Td>
-              <IconButton
-                icon={<FiEdit2 />}
-                variant="tertiary"
-                aria-label="Edit"
-              />
+              <EditModal data={value} />
             </Td>
           </Tr>
         ))}

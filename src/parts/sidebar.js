@@ -36,6 +36,9 @@ import { SidebarButton } from "../components/buttons";
 export const Sidebar = (props) => {
   return (
     <Flex
+      position={"sticky"}
+      top={0}
+      flexShrink={0}
       as="section"
       minH="100vh"
       bgColor={useColorModeValue("gray.50", "gray.800")}
