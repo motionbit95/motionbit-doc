@@ -77,7 +77,7 @@ export const Sidebar = (props) => {
               onClick={() => props.onChangeMenu("request")}
               leftIcon={<FiBookmark />}
             >
-              요청하기
+              요청사항
             </SidebarButton>
           </Stack>
         </Stack>

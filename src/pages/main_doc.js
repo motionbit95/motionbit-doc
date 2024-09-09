@@ -15,6 +15,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Sidebar } from "../parts/sidebar";
+import DocumentRFP from "./document/doc_rfp";
+import DocumentRequest from "./document/doc_request";
 
 function MainDocument(props) {
   const menu = window.location.pathname.split("/").pop();
@@ -27,18 +29,23 @@ function MainDocument(props) {
           }}
         />
         <Flex flex={1} w={"full"} minH={"100vh"} p={4}>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                isCurrentPage
-                fontSize={"xl"}
-                fontWeight={"bold"}
-                href={menu}
-              >
-                {menu.toLocaleUpperCase()}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+          <Stack w={"full"}>
+            <Breadcrumb>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  isCurrentPage
+                  fontSize={"xl"}
+                  fontWeight={"bold"}
+                  href={menu}
+                >
+                  {menu.toLocaleUpperCase()}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </Breadcrumb>
+
+            {/* page */}
+            {menu === "request" && <DocumentRequest />}
+          </Stack>
         </Flex>
       </HStack>
     </Stack>

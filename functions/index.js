@@ -47,3 +47,35 @@ exports.getUserData = onRequest(async (request, response) => {
     response.status(500).send("서버 에러가 발생했습니다.");
   }
 });
+
+exports.getRequests = onRequest(async (req, res) => {
+  const userId = req.query.userId; // 예시: 'carejoa'
+
+  try {
+    // 특정 사용자의 orders 하위 컬렉션을 참조합니다.
+    const ordersRef = db
+      .collection("document")
+      .doc(userId)
+      .collection("request");
+
+    // 하위 컬렉션 내 모든 문서를 가져옵니다.
+    const ordersSnapshot = await ordersRef.get();
+
+    if (ordersSnapshot.empty) {
+      res.status(404).send("No orders found for this user.");
+      return;
+    }
+
+    // 모든 문서 데이터를 배열로 저장
+    let orders = [];
+    ordersSnapshot.forEach((doc) => {
+      orders.push({ id: doc.id, ...doc.data() });
+    });
+
+    // 클라이언트에 데이터를 반환합니다.
+    res.status(200).send(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send("Error fetching orders");
+  }
+});

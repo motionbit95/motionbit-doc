@@ -23,20 +23,48 @@ import {
   ButtonGroup,
   Button,
 } from "@chakra-ui/react";
-import { FiSearch, FiEdit2, FiTrash2 } from "react-icons/fi";
-import { IoArrowDown } from "react-icons/io5";
-import React from "react";
+import { FiDownload } from "react-icons/fi";
+import React, { useEffect } from "react";
+import { formatTimestamp } from "../../firebase/common";
 
-function DocumentRFP(props) {
-  const data = [
-    {
-      id: 1,
-      date: "2024.09.09 16:00:08",
-      title: "0902요양모션빛0610피드백",
-      filepath: "",
-    },
-  ];
+function DocumentRequest(props) {
+  const [data, setData] = React.useState([]);
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  useEffect(() => {
+    const getRequestList = async () => {
+      // 사용자 ID를 설정합니다.
+      const userId = "carejoa"; // 상위 컬렉션의 문서 ID
+
+      // Firebase Function URL
+      const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/getRequests?userId=${encodeURIComponent(
+        userId
+      )}`;
+
+      console.log("Fetching user orders from:", functionUrl);
+
+      // fetch 요청을 보냅니다.
+      fetch(functionUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          return response.json(); // JSON 형태로 응답 데이터를 파싱
+        })
+        .then((data) => {
+          // 성공적으로 데이터를 받았을 때 처리
+          console.log("User orders:", data);
+          setData(data);
+        })
+        .catch((error) => {
+          // 에러가 발생했을 때 처리
+          console.error("There was a problem with the fetch operation:", error);
+        });
+    };
+    getRequestList();
+  }, []);
   return (
     <Stack spacing={4}>
       <Flex bgColor={"purple.100"} p={3} borderRadius={"lg"}>
@@ -63,7 +91,7 @@ function DocumentRFP(props) {
             </ButtonGroup>
           </HStack>
           <Box overflowX="auto">
-            <RFPTable data={data} />
+            <RequestTable data={data} />
           </Box>
         </Stack>
       </Box>
@@ -71,7 +99,7 @@ function DocumentRFP(props) {
   );
 }
 
-export const RFPTable = (props) => {
+export const RequestTable = (props) => {
   return (
     <Table {...props}>
       <Thead>
@@ -81,8 +109,7 @@ export const RFPTable = (props) => {
           </Th>
           <Th>등록일시</Th>
           <Th>제목</Th>
-          <Th>수정</Th>
-          <Th>삭제</Th>
+          <Th>첨부파일</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -92,23 +119,19 @@ export const RFPTable = (props) => {
               <Checkbox />
             </Td>
             <Td>
-              <Text color="fg.muted">{value.date}</Text>
+              <Text color="fg.muted">
+                {formatTimestamp(value.date._seconds, value.date._nanoseconds)}
+              </Text>
             </Td>
             <Td>
               <Text color="fg.muted">{value.title}</Text>
             </Td>
             <Td>
               <IconButton
-                icon={<FiTrash2 />}
+                icon={<FiDownload />}
                 variant="tertiary"
-                aria-label="Delete"
-              />
-            </Td>
-            <Td>
-              <IconButton
-                icon={<FiEdit2 />}
-                variant="tertiary"
-                aria-label="Edit"
+                aria-label="Download"
+                onClick={() => window.open(value.filepath)}
               />
             </Td>
           </Tr>
@@ -118,4 +141,4 @@ export const RFPTable = (props) => {
   );
 };
 
-export default DocumentRFP;
+export default DocumentRequest;
