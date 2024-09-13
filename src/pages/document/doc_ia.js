@@ -18,14 +18,14 @@ import {
 import React, { useEffect } from "react";
 import { AddModal, EditModal } from "../../modals/crud";
 
-function DocumentRFP(props) {
+function DocumentIA(props) {
   const [data, setData] = React.useState([]);
   const isMobile = useBreakpointValue({ base: true, md: false });
   useEffect(() => {
     const getRfpList = async () => {
       // 사용자 ID를 설정합니다.
       const userId = "carejoa"; // 상위 컬렉션의 문서 ID
-      const subCollection = "rfp";
+      const subCollection = "ia";
 
       // Firebase Function URL
       const functionUrl = `http://127.0.0.1:5001/motionbit-doc/us-central1/getDocuments?userId=${encodeURIComponent(
@@ -60,7 +60,7 @@ function DocumentRFP(props) {
   const addDocument = (data) => {
     // 사용자 ID, 하위 컬렉션 이름 및 저장할 데이터를 설정합니다.
     const userId = "carejoa";
-    const subCollection = "rfp";
+    const subCollection = "ia";
     const documentData = data;
 
     // Firebase Function URL
@@ -106,7 +106,7 @@ function DocumentRFP(props) {
             </ButtonGroup>
           </HStack>
           <Box overflowX="auto">
-            <RFPTable data={data} size="sm" />
+            <IATable data={data} size={"sm"} />
           </Box>
         </Stack>
       </Box>
@@ -114,13 +114,13 @@ function DocumentRFP(props) {
   );
 }
 
-export const RFPTable = (props) => {
+export const IATable = (props) => {
   const [selectedItem, setSelectedItem] = React.useState(null);
 
   const updateDocument = (data) => {
     // 사용자 ID, 하위 컬렉션 이름 및 저장할 데이터를 설정합니다.
     const mainDocument = "carejoa";
-    const subCollection = "rfp";
+    const subCollection = "ia";
     const id = data.id;
 
     // Firebase Function URL
@@ -161,11 +161,13 @@ export const RFPTable = (props) => {
           <Th width="1">
             <Checkbox />
           </Th>
-          <Th>스프린트</Th>
           <Th>구분</Th>
+          <Th>Depth1</Th>
+          <Th>Depth2</Th>
+          <Th>Depth3</Th>
           {/* <Th>제목</Th> */}
           <Th>설명</Th>
-          <Th w={"25%"}>진행도</Th>
+          <Th>상태</Th>
           <Th>수정</Th>
         </Tr>
       </Thead>
@@ -180,23 +182,27 @@ export const RFPTable = (props) => {
               <Checkbox />
             </Td>
             <Td>
-              <Badge size="sm" colorScheme={"red"}>
-                {value.sprint}
-              </Badge>
-            </Td>
-            <Td>
               <Badge size="sm" colorScheme={"green"}>
                 {value.division}
               </Badge>
             </Td>
+            <Td>
+              <Text color="fg.muted">{value.depth1}</Text>
+            </Td>
+            <Td>
+              <Text color="fg.muted">{value.depth2}</Text>
+            </Td>
+            <Td>
+              <Text color="fg.muted">{value.depth3}</Text>
+            </Td>
             {/* <Td>
-              <Text color="fg.muted">{value.title}</Text>
-            </Td> */}
+                <Text color="fg.muted">{value.title}</Text>
+              </Td> */}
             <Td>
               <Text color="fg.muted">{value.description}</Text>
             </Td>
             <Td>
-              <Progress value={value.progress} colorScheme={"purple"} />
+              <Badge>{value.state}</Badge>
             </Td>
             <Td>
               <EditModal data={value} onSubmit={updateDocument} />
@@ -208,4 +214,4 @@ export const RFPTable = (props) => {
   );
 };
 
-export default DocumentRFP;
+export default DocumentIA;

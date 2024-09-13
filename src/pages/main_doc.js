@@ -17,6 +17,8 @@ import React, { useState } from "react";
 import { Sidebar } from "../parts/sidebar";
 import DocumentRFP from "./document/doc_rfp";
 import DocumentRequest from "./document/doc_request";
+import DocumentDB from "./document/doc_database";
+import DocumentIA from "./document/doc_ia";
 
 function MainDocument(props) {
   const menu = window.location.pathname.split("/").pop();
@@ -44,8 +46,10 @@ function MainDocument(props) {
             </Breadcrumb>
 
             {/* page */}
+            {menu === "database" && <DocumentDB />}
             {menu === "request" && <DocumentRequest />}
             {menu === "RFP" && <DocumentRFP />}
+            {menu === "IA" && <DocumentIA />}
           </Stack>
         </Flex>
       </HStack>

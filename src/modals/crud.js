@@ -42,11 +42,20 @@ export function AddModal(props) {
             <ModalHeader>{menu} 등록</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <RFSForm
-                onChange={(e) =>
-                  setFormData({ ...formData, [e.target.id]: e.target.value })
-                }
-              />
+              {menu === "RFS" && (
+                <RFSForm
+                  onChange={(e) =>
+                    setFormData({ ...formData, [e.target.id]: e.target.value })
+                  }
+                />
+              )}
+              {menu === "IA" && (
+                <IAForm
+                  onChange={(e) =>
+                    setFormData({ ...formData, [e.target.id]: e.target.value })
+                  }
+                />
+              )}
             </ModalBody>
 
             <ModalFooter>
@@ -83,19 +92,30 @@ export function EditModal(props) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              props.onSubmit({ ...props.data, ...formData });
               console.log(formData);
-              //   onClose();
+              onClose();
             }}
           >
             <ModalHeader>{menu} 수정</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <RFSForm
-                data={props.data}
-                onChange={(e) =>
-                  setFormData({ ...formData, [e.target.id]: e.target.value })
-                }
-              />
+              {menu === "RFS" && (
+                <RFSForm
+                  data={props.data}
+                  onChange={(e) =>
+                    setFormData({ ...formData, [e.target.id]: e.target.value })
+                  }
+                />
+              )}
+              {menu === "IA" && (
+                <IAForm
+                  data={props.data}
+                  onChange={(e) =>
+                    setFormData({ ...formData, [e.target.id]: e.target.value })
+                  }
+                />
+              )}
             </ModalBody>
 
             <ModalFooter>
@@ -174,6 +194,80 @@ export function RFSForm(props) {
             </Select>
           </FormControl>
         )}
+      </FormControl>
+    </>
+  );
+}
+
+export function IAForm(props) {
+  const { onChange, data } = props;
+  return (
+    <>
+      <FormControl isRequired>
+        <FormLabel>분류</FormLabel>
+        <Select
+          placeholder="---선택---"
+          defaultValue={data?.division}
+          id="division"
+          onChange={onChange}
+        >
+          <option value="웹">웹</option>
+          <option value="앱">앱</option>
+        </Select>
+      </FormControl>
+      <FormControl isRequired>
+        <FormLabel>Depth1</FormLabel>
+        <Input
+          id="depth1"
+          placeholder="Depth1을 입력하세요"
+          defaultValue={data?.depth1}
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Depth2</FormLabel>
+        <Input
+          id="depth2"
+          placeholder="Depth2를 입력하세요"
+          defaultValue={data?.depth2}
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Depth3</FormLabel>
+        <Input
+          id="depth3"
+          placeholder="Depth3을 입력하세요"
+          defaultValue={data?.depth3}
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Page</FormLabel>
+        <Input
+          id="page"
+          placeholder="페이지 경로를 입력하세요."
+          defaultValue={data?.page}
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl isRequired>
+        <FormLabel>설명</FormLabel>
+        <Textarea
+          id="description"
+          placeholder="아키텍쳐를 설명하세요."
+          defaultValue={data?.description}
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl isRequired>
+        <FormLabel>상태</FormLabel>
+        <Input
+          id="state"
+          placeholder="진행상태를 입력하세요."
+          defaultValue={data?.state}
+          onChange={onChange}
+        />
       </FormControl>
     </>
   );
