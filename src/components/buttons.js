@@ -6,6 +6,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import { FiSearch } from "react-icons/fi";
 
 export function OutlineButton(props) {
   return (
@@ -30,6 +31,15 @@ export const SidebarButton = (props) => (
     variant="tertiary"
     justifyContent="start"
     iconSpacing="3"
+    {...props}
+  />
+);
+
+export const SearchButton = (props) => (
+  <IconButton
+    colorScheme="blue"
+    icon={<FiSearch />}
+    aria-label="search"
     {...props}
   />
 );

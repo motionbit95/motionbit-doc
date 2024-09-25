@@ -67,21 +67,6 @@ export const Sidebar = (props) => {
             >
               데이터베이스
             </SidebarButton>
-            <DocumentCollapse
-              onChangeMenu={(value) => props.onChangeMenu(value)}
-            />
-            <SidebarButton
-              onClick={() => props.onChangeMenu("history")}
-              leftIcon={<FiClock />}
-            >
-              업무일지
-            </SidebarButton>
-            <SidebarButton
-              onClick={() => props.onChangeMenu("request")}
-              leftIcon={<FiBookmark />}
-            >
-              요청사항
-            </SidebarButton>
           </Stack>
         </Stack>
         <Stack spacing="4" divider={<StackDivider />}>
@@ -112,7 +97,7 @@ export const Sidebar = (props) => {
                 </Text>
               </Box>
             </HStack>
-            <Menu>
+            {/* <Menu>
               <MenuButton
                 as={Button}
                 variant="tertiary"
@@ -123,7 +108,7 @@ export const Sidebar = (props) => {
                 <MenuItem>로그아웃</MenuItem>
                 <MenuItem>비밀번호 변경</MenuItem>
               </MenuList>
-            </Menu>
+            </Menu> */}
           </HStack>
         </Stack>
       </Stack>

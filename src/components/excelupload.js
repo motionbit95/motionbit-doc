@@ -62,14 +62,14 @@ const ExcelUpload = (props) => {
 
   return (
     <HStack>
-      {excelData.length === 0 && (
+      {/* {excelData.length === 0 && (
         <Button
           onClick={() => inputRef.current.click()}
           rightIcon={<FiUpload />}
         >
           파일업로드
         </Button>
-      )}
+      )} */}
       <Input
         ref={inputRef}
         display={"none"}

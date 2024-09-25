@@ -15,13 +15,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Sidebar } from "../parts/sidebar";
-import DocumentRFP from "./document/doc_rfp";
-import DocumentRequest from "./document/doc_request";
-import DocumentDB from "./document/doc_database";
-import DocumentIA from "./document/doc_ia";
-
+import Database from "./database";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 function MainDocument(props) {
-  const menu = window.location.pathname.split("/").pop();
+  const menu = window.location.pathname.split("/").slice(1).join(" / ");
   return (
     <Stack gap={4}>
       <HStack alignItems={"start"}>
@@ -45,11 +42,11 @@ function MainDocument(props) {
               </BreadcrumbItem>
             </Breadcrumb>
 
-            {/* page */}
-            {menu === "database" && <DocumentDB />}
-            {menu === "request" && <DocumentRequest />}
-            {menu === "RFP" && <DocumentRFP />}
-            {menu === "IA" && <DocumentIA />}
+            <BrowserRouter>
+              <Routes>
+                <Route path="/database/*" element={<Database />} />
+              </Routes>
+            </BrowserRouter>
           </Stack>
         </Flex>
       </HStack>
